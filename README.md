@@ -4,5 +4,8 @@
 - [X] 1번키
 - [X] 2번키
 - [X] 3번키
-- [ ] 4번키
-- [ ] 5번키
+- [x] 4번키
+- [x] 5번키
+
+:four_leaf_clover: (Extra credit +50%) Use the space bar to toggle whether the yellow teapot follows the motion of the wrist joint or not.
+- [ ] 주전자 
