@@ -100,9 +100,9 @@ void myDisplay()
 	//Ground
 	glm::mat4 model = glm::mat4(1.0f); // initialize matrix to identity matrix first
 
-	DrawGroundPlane(model);
+    DrawGroundPlane(model);
 
-	DrawObject(objectXform);
+    DrawObject(objectXform);
 
 	// ADD YOUR ROBOT RENDERING STUFF HERE     /////////////////////////////////////////////////////
 
@@ -120,6 +120,35 @@ void myDisplay()
 	model = glm::rotate(model, glm::radians(ElbowAng), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	DrawArmSegment(model);
+
+	model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
+	model = glm::rotate(model, glm::radians(WristAng), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::rotate(model, glm::radians(WristTwistAng), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	DrawWrist(model);
+
+	glm::mat4 model1 = glm::mat4(1.0f); 
+
+	model1 = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+	model1 = glm::rotate(model1, glm::radians(FingerAng1), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	DrawFingerBase(model1);
+
+	model1 = glm::translate(model1, glm::vec3(0.0f, 0.35f, 0.0f));
+	model1 = glm::rotate(model1, glm::radians(FingerAng2), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	DrawFingerTip(model1);
+
+	model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+	model = glm::rotate(model, glm::radians(-FingerAng1), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	DrawFingerBase(model);
+
+	model = glm::translate(model, glm::vec3(0.0f, 0.35f, 0.0f));
+	model = glm::rotate(model, glm::radians(-FingerAng2), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	DrawFingerTip(model);
+
 
 
 
