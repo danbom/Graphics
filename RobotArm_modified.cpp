@@ -3,6 +3,8 @@
 // 스페이스바를 통해 토글되는 것은 구현하지 못했습니다.
 
 
+
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -30,7 +32,6 @@ float WristAng = 90;       // 3
 float WristTwistAng = 10;
 float FingerAng1 = 45;     // 4
 float FingerAng2 = -90;
-int REV = 10; //추가!!!
 
 // ROBOT COLORS
 GLfloat Ground[] = { 0.5f, 0.5f, 0.5f };
@@ -42,6 +43,7 @@ GLfloat FingerJoints[] = { 0.5f, 0.5f, 0.5f };
 // USER INTERFACE GLOBALS
 int LeftButtonDown = 0;    // MOUSE STUFF
 int RobotControl = 0;
+float REV = 0.0f;
 
 // settings
 const unsigned int SCR_WIDTH = 768;
@@ -69,7 +71,7 @@ Model* ourObjectModel;
 const char* ourObjectPath = "./teapot.obj";
 // translate it so it's at the center of the scene
 // it's a bit too big for our scene, so scale it down
-glm::mat4 objectXform = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(0.08f, 0.08f, 0.08f));
+glm::mat4 objectXform = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(0.0005f, 0.0005f, 0.0005f));
 
 // HOUSE KEEPING
 void initGL(GLFWwindow** window);
@@ -96,6 +98,8 @@ void DrawFingerTip(glm::mat4 model);
 void DrawObject(glm::mat4 model);
 bool hasTextures = false; 
 
+glm::mat4 model = glm::mat4(1.0f); // initialize matrix to identity matrix first
+
 void myDisplay()
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -108,6 +112,8 @@ void myDisplay()
 	glm::mat4 model = glm::mat4(1.0f); // initialize matrix to identity matrix first
 
     DrawGroundPlane(model);
+
+	DrawObject(objectXform);
 
 	// ADD YOUR ROBOT RENDERING STUFF HERE     /////////////////////////////////////////////////////
 
@@ -154,16 +160,12 @@ void myDisplay()
 
 	DrawFingerTip(model);
 
-	glPushMatrix();
-
-	glRotatef((GLfloat)REV, 1, 1, 1);
-
-	glTranslatef(5, 0, 0);
-
+	// glLoadIdentity(); 안먹힘
+	// objectXform = glm::translate(model, glm::vec3(-5.0f, 60.0f, 0.0f)); 안먹힘
 	
-	DrawObject(objectXform);
-
-	glPopMatrix();
+	objectXform = glm::rotate(model, glm::radians(REV), glm::vec3(0.0f, 0.0f, 1.0f));
+	objectXform = glm::scale(objectXform, glm::vec3(0.08f, 0.08f, 0.08f));
+	objectXform = glm::translate(objectXform, glm::vec3(0.0f, -9.0f, 0.0f));
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,9 +289,8 @@ void processInput(GLFWwindow* window, int key, int scancode, int action, int mod
 		RobotControl = key - GLFW_KEY_1;
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	RobotControl = key;
-	REV = (REV + 10) % 360;}	
 }
 
 
@@ -329,7 +330,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		case 3: WristAng += yoffset  * -180; WristTwistAng += xoffset  * 180; break;
 		case 4: FingerAng1 += yoffset  * 90; FingerAng2 += xoffset * 180; break;
 		case ' ': { 
-			REV = (REV + 10) % 360;
 			break; }
 		}
 	} 
