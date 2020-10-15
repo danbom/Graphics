@@ -1,8 +1,3 @@
-// RobotArm.cpp -> 기본 과제 구현
-// RobotArm_modified.cpp->주전자가 로봇 팔과 함께 움직임
-// 스페이스바를 통해 토글되는 것은 구현하지 못했습니다.
-
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -30,7 +25,6 @@ float WristAng = 90;       // 3
 float WristTwistAng = 10;
 float FingerAng1 = 45;     // 4
 float FingerAng2 = -90;
-int REV = 10; //추가!!!
 
 // ROBOT COLORS
 GLfloat Ground[] = { 0.5f, 0.5f, 0.5f };
@@ -41,6 +35,7 @@ GLfloat FingerJoints[] = { 0.5f, 0.5f, 0.5f };
 
 // USER INTERFACE GLOBALS
 int LeftButtonDown = 0;    // MOUSE STUFF
+int RightButtonDown = 0;
 int RobotControl = 0;
 
 // settings
@@ -94,20 +89,22 @@ void DrawFingerBase(glm::mat4 model);
 void DrawFingerTip(glm::mat4 model);
 
 void DrawObject(glm::mat4 model);
-bool hasTextures = false; 
+bool hasTextures = false;
 
 void myDisplay()
 {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//Ground
 	glm::mat4 model = glm::mat4(1.0f); // initialize matrix to identity matrix first
 
-    DrawGroundPlane(model);
+	DrawGroundPlane(model);
+
+	DrawObject(objectXform);
 
 	// ADD YOUR ROBOT RENDERING STUFF HERE     /////////////////////////////////////////////////////
 
@@ -132,7 +129,7 @@ void myDisplay()
 
 	DrawWrist(model);
 
-	glm::mat4 model1 = glm::mat4(1.0f); 
+	glm::mat4 model1 = glm::mat4(1.0f);
 
 	model1 = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 	model1 = glm::rotate(model1, glm::radians(FingerAng1), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -153,17 +150,6 @@ void myDisplay()
 	model = glm::rotate(model, glm::radians(-FingerAng2), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	DrawFingerTip(model);
-
-	glPushMatrix();
-
-	glRotatef((GLfloat)REV, 1, 1, 1);
-
-	glTranslatef(5, 0, 0);
-
-	
-	DrawObject(objectXform);
-
-	glPopMatrix();
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,9 +273,19 @@ void processInput(GLFWwindow* window, int key, int scancode, int action, int mod
 		RobotControl = key - GLFW_KEY_1;
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-	RobotControl = key;
-	REV = (REV + 10) % 360;}	
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
+
+	////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 
@@ -308,32 +304,34 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstMouse)
 	{
-		lastX = (float) xpos;
-		lastY = (float) ypos;
+		lastX = (float)xpos;
+		lastY = (float)ypos;
 		firstMouse = false;
 	}
 
-	float xoffset = (float) (xpos - lastX) / SCR_WIDTH;
-	float yoffset = (float) (lastY - ypos) / SCR_HEIGHT; // reversed since y-coordinates go from bottom to top
+	float xoffset = (float)(xpos - lastX); // / SCR_WIDTH;
+	float yoffset = (float)(lastY - ypos); // / SCR_HEIGHT; // reversed since y-coordinates go from bottom to top
 
-	lastX = (float) xpos;
-	lastY = (float) ypos;
+	lastX = (float)xpos;
+	lastY = (float)ypos;
+
+	if (RightButtonDown) 
+		camera.ProcessMouseMovement(xoffset, yoffset);
 
 	if (LeftButtonDown)
 	{
 		switch (RobotControl)
 		{
-		case 0: BaseTransX += xoffset; BaseTransZ -= yoffset; break;
-		case 1: BaseSpin += xoffset * 180 ; break;
-		case 2: ShoulderAng += yoffset   * -90; ElbowAng += xoffset  * 90; break;
-		case 3: WristAng += yoffset  * -180; WristTwistAng += xoffset  * 180; break;
-		case 4: FingerAng1 += yoffset  * 90; FingerAng2 += xoffset * 180; break;
-		case ' ': { 
-			REV = (REV + 10) % 360;
-			break; }
+		case 0: BaseTransX += xoffset/ SCR_WIDTH; BaseTransZ -= yoffset/ SCR_HEIGHT; break;
+		case 1: BaseSpin += xoffset/ SCR_WIDTH * 180; break;
+		case 2: ShoulderAng += yoffset/ SCR_HEIGHT * -90; ElbowAng += xoffset/ SCR_WIDTH * 90; break;
+		case 3: WristAng += yoffset/ SCR_HEIGHT * -180; WristTwistAng += xoffset/ SCR_WIDTH * 180; break;
+		case 4: FingerAng1 += yoffset/ SCR_HEIGHT * 90; FingerAng2 += xoffset/ SCR_WIDTH * 180; break;
 		}
-	} 
-	
+	}
+
+
+
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -345,6 +343,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
 	{
 		LeftButtonDown = 0;
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		RightButtonDown = 1;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+	{
+		RightButtonDown = 0;
 	}
 }
 
@@ -370,7 +376,7 @@ protected:
 	unsigned int VAO = 0, vbo = 0, ebo = 0;
 	unsigned int IndexCount = 0;
 	float height = 1.0f;
-    float radius[2] = { 1.0f, 1.0f };
+	float radius[2] = { 1.0f, 1.0f };
 };
 
 class Cylinder : public Primitive {
@@ -505,7 +511,7 @@ void DrawWrist(glm::mat4 model)
 	Mat1 = Base * Mat1;
 	PhongShader->setMat4("model", Mat1);
 	PhongShader->setVec3("ObjColor", glm::vec3(FingerJoints[0], FingerJoints[1], FingerJoints[2]));
-	unitSphere->Draw(); 
+	unitSphere->Draw();
 }
 void DrawFingerBase(glm::mat4 model)
 {
@@ -618,7 +624,7 @@ Sphere::Sphere(int NumSegs)
 			data.push_back(normals[i].z);
 		}
 	}
-	
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
@@ -684,7 +690,7 @@ Plane::Plane()
 	};
 	unsigned int indices[] = { 0, 1, 3, 2 };
 
-	IndexCount = sizeof(indices)/sizeof(unsigned int);
+	IndexCount = sizeof(indices) / sizeof(unsigned int);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -706,7 +712,7 @@ Plane::Plane()
 
 	glBindVertexArray(0);
 
-	 floorTexture = loadTexture("./wood.png");
+	floorTexture = loadTexture("./wood.png");
 	FloorShader->use();
 	FloorShader->setInt("texture1", floorTexture);
 
