@@ -61,10 +61,10 @@ Shader* FloorShader;
 
 // ObjectModel
 Model* ourObjectModel;
-const char* ourObjectPath = "./teapot.obj";
+const char* ourObjectPath = "./mangnanyong.obj";
 // translate it so it's at the center of the scene
 // it's a bit too big for our scene, so scale it down
-glm::mat4 objectXform = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f)), glm::vec3(0.08f, 0.08f, 0.08f));
+glm::mat4 objectXform = glm::rotate(glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.6f, 0.1f, 0.0f)), glm::vec3(0.001f, 0.001f, 0.001f)), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 // HOUSE KEEPING
 void initGL(GLFWwindow** window);
@@ -549,10 +549,11 @@ void DrawFingerTip(glm::mat4 model)
 
 void DrawObject(glm::mat4 model)
 {
+
 	PhongShader->use();
 	PhongShader->setMat4("model", model);
-	PhongShader->setVec3("ObjColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	PhongShader->setInt("hasTextures", hasTextures);
+	//PhongShader->setVec3("ObjColor", glm::vec3(1.0f, 1.0f, 0.0f));
+	//PhongShader->setInt("hasTextures", hasTextures);
 	ourObjectModel->Draw(*PhongShader);
 }
 
