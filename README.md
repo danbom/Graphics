@@ -1,12 +1,13 @@
-# LearnOpenGL
+## 컴퓨터 그래픽스
 
-## :cherry_blossom: 컴퓨터그래픽스 OpenGL 과제 및 공부
-- [X] 1번키
-- [X] 2번키
-- [X] 3번키
-- [x] 4번키
-- [x] 5번키
-
-## :four_leaf_clover: (Extra credit +50%) Use the space bar to toggle whether the yellow teapot follows the motion of the wrist joint or not.
-- [ ] 주전자 움직이기
- 
+### 📢 OpenGL RobotArm 과제
+- HW4 : 스페이스바 구현 못함
+- HW5 : 오브젝트 색이 제대로 들어가지 않음
+### 📢 1,2,3,4,5,6장 필기
+- [X] 1장
+- [ ] 2장
+- [ ] 3장
+- [ ] 4장
+- [ ] 5장
+- [ ] 6장
+- [ ] 7장
