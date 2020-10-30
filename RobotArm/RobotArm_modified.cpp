@@ -1,6 +1,6 @@
-// RobotArm.cpp -> ±âº» °úÁ¦ ±¸Çö
-// RobotArm_modified.cpp->ÁÖÀüÀÚ°¡ ·Îº¿ ÆÈ°ú ÇÔ²² ¿òÁ÷ÀÓ
-// ½ºÆäÀÌ½º¹Ù¸¦ ÅëÇØ Åä±ÛµÇ´Â °ÍÀº ±¸ÇöÇÏÁö ¸øÇß½À´Ï´Ù.
+// RobotArm.cpp -> ê¸°ë³¸ ê³¼ì œ êµ¬í˜„
+// RobotArm_modified.cpp->ì£¼ì „ìê°€ ë¡œë´‡ íŒ”ê³¼ í•¨ê»˜ ì›€ì§ì„
+// ìŠ¤í˜ì´ìŠ¤ë°”ë¥¼ í†µí•´ í† ê¸€ë˜ëŠ” ê²ƒì€ êµ¬í˜„í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.
 
 
 
@@ -160,8 +160,8 @@ void myDisplay()
 
 	DrawFingerTip(model);
 
-	// glLoadIdentity(); ¾È¸ÔÈû
-	// objectXform = glm::translate(model, glm::vec3(-5.0f, 60.0f, 0.0f)); ¾È¸ÔÈû
+	// glLoadIdentity(); ì•ˆë¨¹í˜
+	// objectXform = glm::translate(model, glm::vec3(-5.0f, 60.0f, 0.0f)); ì•ˆë¨¹í˜
 	
 	objectXform = glm::rotate(model, glm::radians(REV), glm::vec3(0.0f, 0.0f, 1.0f));
 	objectXform = glm::scale(objectXform, glm::vec3(0.08f, 0.08f, 0.08f));
